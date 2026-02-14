@@ -1,7 +1,7 @@
 import  UserCard from './components/UserCard.tsx';
 import SkillList from './components/SkillList.tsx';
 import type  { User, Skill } from './types.ts';
-
+import SearchApp from './components/SearchApp.tsx';
 
 function App() {
   const sampleUser: User = {
@@ -26,7 +26,7 @@ function App() {
 
       <h3>Skills:</h3>
       <SkillList skills={sampleSkills} />
-
+      <SearchApp />
     </div>
   );
 }
