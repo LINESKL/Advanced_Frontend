@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# Task 2 — User Search with Filtering
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Поиск пользователей по имени с фильтрацией данных в реальном времени.
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Проект демонстрирует:
+- Типизированные состояния в React
+- Фильтрацию массива по строке поиска
+- Контролируемый input
+- Условный рендеринг результатов
+- Переиспользование компонентов
 
-## React Compiler
+## Компоненты
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### SearchApp (`src/components/SearchApp.tsx`)
 
-## Expanding the ESLint configuration
+Главный компонент приложения:
+- Инициализация массива пользователей
+- Состояния: `users`, `filteredUsers`, `searchTerm`
+- Фильтрация по имени (`includes` + `toLowerCase`)
+- Очистка поиска и сброс списка
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Состояние:**
+```typescript
+const [users] = useState<User[]>(INITIAL_DATA);
+const [filteredUsers, setFilteredUsers] = useState<User[]>(INITIAL_DATA);
+const [searchTerm, setSearchTerm] = useState<string>("");
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Фильтрация:**
+```typescript
+const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const term = event.target.value;
+  setSearchTerm(term);
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+  const filtered = users.filter((u) =>
+    u.name.toLowerCase().includes(term.toLowerCase())
+  );
+  setFilteredUsers(filtered);
+};
 ```
+
+### UserCard (`src/components/UserCard.tsx`)
+
+Переиспользуемая карточка пользователя:
+- Props: `user`, `children`, `isActive?`
+- Используется как в профиле, так и в результатах поиска
+
+## Ключевые концепции
+
+- **useState с типизацией**
+- **Фильтрация массива**
+- **Controlled input**
+- **Условный рендеринг**
+- **Переиспользование компонентов**
+
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+pnpm install
+
+# Запуск dev сервера
+pnpm dev
+
+# Сборка для production
+pnpm build
+```
+
+## Технологии
+
+- React 18
+- TypeScript
+- Vite
+- ESLint
+
+## Расширения
+
+Возможные улучшения:
+- Поиск по email
+- Дебаунсинг ввода
+- Подсветка совпадений в имени
+- Сохранение последнего запроса в localStorage
