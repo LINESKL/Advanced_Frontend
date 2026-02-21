@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# Task 1 — Basic Routing
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Создание базовой структуры одностраничного приложения (SPA) с использованием React Router.
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Проект демонстрирует основы маршрутизации в React:
+- Настройка путей через `createBrowserRouter`
+- Использование общего макета (`Layout`)
+- Рендеринг вложенных страниц через `Outlet`
+- Навигация между страницами без перезагрузки браузера
 
-## React Compiler
+## Компоненты
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Layout (`src/Layout.tsx`)
 
-## Expanding the ESLint configuration
+Главный макет приложения:
+- Навигационная панель с ссылками `<Link />`
+- Область основного контента с компонентом `<Outlet />` (куда подставляются страницы)
+- Общий футер страницы
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Pages (`src/pages/`)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
+- **Home**: Главная страница
+- **About**: Страница "О проекте"
+- **NotFound**: Обработка несуществующих путей (404)
+
+### main.tsx
+
+Конфигурация маршрутов:
+```typescript
+const router = createBrowserRouter([
   {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "courses", element: <Courses /> },
+      { path: "about", element: <About /> },
+      { path: "*", element: <NotFound /> },
     ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
   },
-])
+]);
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Ключевые концепции
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **BrowserRouter**: Провайдер маршрутизации
+- **Link**: Компонент для переходов без перезагрузки
+- **Outlet**: Место в макете, где рендерятся дочерние маршруты
+- **Catch-all route** (`*`): Маршрут для обработки ошибок 404
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+pnpm install
+
+# Запуск dev сервера
+pnpm dev
 ```
+
+## Технологии
+
+- React 18
+- TypeScript
+- React Router 6/7
+- Vite
+- pnpm

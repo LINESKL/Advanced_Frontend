@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# Task 2 — Advanced Routing and Data Loading
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Каталог курсов с динамическими путями, предварительной загрузкой данных и синхронизацией состояния с URL.
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Проект демонстрирует продвинутые возможности React Router:
+- Динамические параметры пути (`:id`)
+- Использование `loader` для получения данных до рендеринга
+- Управление параметрами поиска (`query strings`) через `useSearchParams`
+- Обработка ошибок загрузки через `errorElement`
 
-## React Compiler
+## Компоненты
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Courses (`src/pages/Courses.tsx`)
 
-## Expanding the ESLint configuration
+Страница со списком курсов:
+- Использует `useSearchParams` для реализации сортировки (asc/desc)
+- Состояние сортировки сохраняется в URL: `?sort=asc`
+- Автоматически сортирует список курсов при изменении параметра в URL
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### CourseDetail (`src/pages/CourseDetail.tsx`)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Страница деталей курса:
+- Получает ID из параметров пути через `useParams`
+- Получает данные курса через хук `useLoaderData`
+- Демонстрирует работу типизированных загрузчиков
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### data.ts
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
+Слой данных:
+- Интерфейс `Course`
+- Моковые данные (массив курсов)
+- Функция `getCourseById` для поиска курса
+
+### main.tsx (Конфигурация)
+
+Настройка роутера с загрузчиками:
+```typescript
+{
+  path: "courses/:id",
+  element: <CourseDetail />,
+  errorElement: <p style={{ color: 'red' }}>Course not found!</p>,
+  loader: async ({ params }) => {
+    const course = getCourseById(Number(params.id));
+    if (!course) throw new Error("Not found");
+    return { course };
   },
-])
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Ключевые концепции
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Dynamic Routes**: Маршруты с переменными частями
+- **Loaders**: Функция, выполняющаяся перед переходом на маршрут
+- **useLoaderData**: Хук для доступа к данным из загрузчика
+- **useSearchParams**: Хук для чтения и записи query-параметров
+- **errorElement**: Компонент-заглушка для ошибок внутри маршрута
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+pnpm install
+
+# Запуск dev сервера
+pnpm dev
 ```
+
+## Технологии
+
+- React 18
+- TypeScript
+- React Router 6/7
+- Vite
+- pnpm
