@@ -1,73 +1,61 @@
-# React + TypeScript + Vite
+# Task 1 — Memoization with React.memo, useMemo, useCallback
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SPA-приложение, демонстрирующее методы предотвращения лишних рендеров с помощью хуков мемоизации в React.
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+В данном проекте решается проблема «водопада рендеров», когда изменение локального состояния (например, счетчика) вызывает перерисовку всех дочерних компонентов, включая те, которые производят тяжелые вычисления.
 
-## React Compiler
+Проект демонстрирует:
+- Применение `React.memo` для предотвращения ререндера компонента при неизменных пропсах.
+- Использование `useMemo` для кеширования вычислений.
+- Использование `useCallback` для сохранения ссылки на функцию между рендерами.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Компоненты
 
-## Expanding the ESLint configuration
+### Dashboard (`src/components/Dashboard.tsx`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Главный компонент, содержащий стейт счетчика:
+- Передает пропсы в дочерние компоненты.
+- Делегирует обработку кликов с помощью закешированной функции `handleIncrement`.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### UserCard (`src/components/UserCard.tsx`)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Отображает информацию о пользователе:
+- Обернут в `React.memo`, так как данные о пользователе не меняются при инкременте счетчика.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### AnalyticsChart (`src/components/AnalyticsChart.tsx`)
+
+Симулирует тяжелые вычисления для генерации данных графика:
+- Результат вычислений кэшируется через `useMemo`, предотвращая блокировку потока при ререндере счётчика.
+
+### Button (`src/components/Button.tsx`)
+
+Кнопка увеличения счетчика:
+- Работает в связке с `useCallback` со стороны родителя для избежания лишних перерисовок.
+
+## Ключевые концепции
+
+- **Reference equality**: понимание ссылочной идентичности объектов и функций в JS.
+- **Memoization**: применение хуков мемоизации `useMemo` и `useCallback`.
+- **Performance profiling**: поиск узких мест через React Profiler.
+
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+pnpm install
+
+# Запуск dev сервера
+pnpm dev
+
+# Сборка для production
+pnpm build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Технологии
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- React 18
+- TypeScript
+- Vite
+- pnpm

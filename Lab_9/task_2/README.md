@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
+# Task 2 — Virtualization for Large Lists
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SPA-приложение, демонстрирующее оптимизацию рендеринга огромных списков с помощью виртуализации (windowing).
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Приложение отображает список из 10 000 элементов данных с возможностью фильтрации. Для решения проблемы падения производительности и долгого времени отрисовки (FCP) применяется подход отображения только видимой области списка с использованием сторонней библиотеки `react-window`.
 
-## React Compiler
+Проект демонстрирует:
+- Генерацию моковых данных большого объема.
+- Сравнение рендера обычного списка и виртуализированного.
+- Оптимизацию фильтрации поиска через `useMemo`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Структура
 
-## Expanding the ESLint configuration
+### Utils (`src/utils/generateItems.ts`)
+- Генератор массива объектов. Создает 10 000 записей со случайными категориями и датами.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### RegularList (`src/components/RegularList.tsx`)
+- Классический вариант отрисовки списка, который создает тысячу DOM-узлов, замедляя работу браузера. Оставлен для сравнения.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### VirtualList (`src/components/VirtualList.tsx`)
+- Оптимизированный компонент на базе `FixedSizeList` из `react-window`.
+- Динамически создает и уничтожает DOM-узлы при скроллинге.
+- Включает мемоизированную логику поиска списка элементов по названию.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Ключевые концепции
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Виртуализация (Windowing)**: рендер элементов только видимой части viewport, существенное уменьшение количества DOM элементов.
+- **Оптимизация поиска**: использование `useMemo` для фильтрации большого массива без зависания интерфейса.
+
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+pnpm install
+
+# Запуск dev сервера
+pnpm dev
+
+# Сборка для production
+pnpm build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Технологии
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- React 18
+- TypeScript
+- Vite
+- react-window
+- pnpm
