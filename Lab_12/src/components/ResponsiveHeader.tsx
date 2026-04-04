@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    boxShadow: Platform.OS === 'web' ? '0px 2px 4px rgba(0, 0, 0, 0.2)' : undefined,
   },
   headerContent: {
     flex: 1,

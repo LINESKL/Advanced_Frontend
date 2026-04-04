@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    boxShadow: Platform.OS === 'web' ? '0px 2px 4px rgba(0, 0, 0, 0.1)' : undefined,
   },
   featureIcon: {
     fontSize: 32,
@@ -226,6 +227,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+    boxShadow: Platform.OS === 'web' ? '0px 1px 2px rgba(0, 0, 0, 0.1)' : undefined,
   },
   statsRowTablet: {
     paddingVertical: 24,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, Platform } from 'react-native';
 
 interface GridLayoutProps {
   children: React.ReactNode;
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    boxShadow: Platform.OS === 'web' ? '0px 2px 4px rgba(0, 0, 0, 0.1)' : undefined,
   },
   cardTitle: {
     fontSize: 16,
