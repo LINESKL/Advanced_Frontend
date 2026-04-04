@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 export function ContactSection() {
-  const[email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const[message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = () => {

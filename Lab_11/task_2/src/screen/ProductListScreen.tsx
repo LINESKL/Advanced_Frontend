@@ -24,13 +24,13 @@ export function ProductListScreen({ navigation }: ProductListScreenProps) {
     setRefreshing(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setRefreshing(false);
-  },[]);
+  }, []);
 
   const renderItem = useCallback(({ item }: { item: Product }) => (
     <ProductItem product={item} onPress={handleProductPress} />
-  ),[handleProductPress]);
+  ), [handleProductPress]);
 
-  const keyExtractor = useCallback((item: Product) => item.id,[]);
+  const keyExtractor = useCallback((item: Product) => item.id, []);
 
   return (
     <View style={styles.container}>
