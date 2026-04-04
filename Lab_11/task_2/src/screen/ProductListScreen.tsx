@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, FlatList, Text, RefreshControl, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProductItem } from '../components/ProductItem';
-import { products, Product } from '../data/products';
+import { products, Product } from '../data/product';
 
 type RootStackParamList = {
   ProductList: undefined;

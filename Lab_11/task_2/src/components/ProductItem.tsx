@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { Product } from '../data/products';
+import { Product } from '../data/product';
 
 interface ProductItemProps {
   product: Product;

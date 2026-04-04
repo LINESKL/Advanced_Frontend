@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
-import { Product } from '../data/products';
+import { Product } from '../data/product';
 
 type RootStackParamList = {
   ProductList: undefined;
