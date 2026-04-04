@@ -1,5 +1,5 @@
-import { JSX } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 interface ProfileCardProps {
   name: string;
@@ -8,11 +8,11 @@ interface ProfileCardProps {
   bio: string;
 }
 
-export function ProfileCard({ name, role, avatar, bio }: ProfileCardProps): JSX.Element {
+export function ProfileCard({ name, role, avatar, bio }: ProfileCardProps) {
   return (
     <View style={styles.card}>
       <Image
-        source={{ uri: avatar || "default-avatar.png" }}
+        source={{ uri: avatar || 'https://via.placeholder.com/100' }}
         style={styles.avatar}
       />
       <View style={styles.info}>
@@ -26,13 +26,13 @@ export function ProfileCard({ name, role, avatar, bio }: ProfileCardProps): JSX.
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
     margin: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    shadowColor: "#000",
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -49,18 +49,18 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 4,
   },
   role: {
     fontSize: 16,
-    color: "#666",
+    color: '#666',
     marginBottom: 8,
   },
   bio: {
     fontSize: 14,
-    color: "#888",
+    color: '#888',
     lineHeight: 20,
   },
 });
