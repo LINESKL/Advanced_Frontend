@@ -1,50 +1,74 @@
-# Welcome to your Expo app 👋
+# Lab 13.2 — Tab Navigation with Nested Stacks
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Student Name:** Нурканат Алиар
+**Date:** 11.04.2026
 
-## Get started
+## Navigation Setup Explanation
 
-1. Install dependencies
+В данном проекте реализована более сложная архитектура с использованием **вложенной навигации**.
+Настройка выполнена в файле `src/navigation/AppNavigator.tsx`:
 
-   ```bash
-   npm install
-   ```
+1. **`createBottomTabNavigator`**: Создает нижнюю панель навигации с 4 вкладками (Home, Search, Notifications, Profile).
+2. **Nested Stacks**: Каждая вкладка содержит свой собственный `NativeStackNavigator`. Это позволяет внутри вкладки переходить на другие экраны, сохраняя нижнее меню активным.
+3. **Tab Icons**: Иконки для вкладок реализованы через `@expo/vector-icons` (Ionicons).
+4. **Badges**: На вкладке уведомлений отображается красный бейдж со счетчиком новых событий.
 
-2. Start the app
+## Описание проекта
 
-   ```bash
-   npx expo start
-   ```
+Приложение, имитирующее структуру типичной социальной сети:
 
-In the output, you'll find options to open the app in a
+- **HomeTab**: Главный экран со статистикой (Posts, Followers) и кнопками перехода в профиль и настройки.
+- **SearchTab**: Экран поиска с полем ввода.
+- **NotificationsTab**: Список уведомлений о новых подписчиках, лайках и комментариях.
+- **ProfileTab**: Экран профиля с аватаром и биографией, возможностью перейти в настройки.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Компоненты
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### AppNavigator.tsx
+Корневой навигатор, содержащий `Tab.Navigator` с четырьмя вкладками. Каждая вкладка — это отдельная функция-компонент (например, `HomeStack`), внутри которой определен свой стек экранов.
 
-## Get a fresh project
+### TabIcon
+Вспомогательный компонент для отображения иконки вкладки. Поддерживает отображение бейджа (красный кружок с числом).
 
-When you're ready, run:
+### HomeScreen
+Отображает карточки со статистикой пользователя и кнопки действий.
+
+### SearchScreen
+Содержит `TextInput` для имитации поиска.
+
+### NotificationsScreen
+Использует `FlatList` для отображения списка уведомлений.
+
+### ProfileScreen
+Отображает аватар, имя и биографию пользователя.
+
+### SettingsScreen
+Содержит переключатели (`Switch`) для настроек уведомлений и темной темы.
+
+## Ключевые концепции
+
+- **Bottom Tab Navigator**: Нижняя панель навигации.
+- **Nested Navigators**: Вложенность навигаторов (Stack внутри Tab).
+- **Screen Options**: Настройка внешнего вида вкладок (`tabBarIcon`, `tabBarActiveTintColor`).
+- **Switch Component**: Нативный переключатель для настроек.
+
+## Установка и запуск
 
 ```bash
-npm run reset-project
+# Установка зависимостей
+npm install
+
+# Запуск dev сервера Expo
+npx expo start --web
+
+# Для мобильного устройства:
+# npx expo start
+# Отсканируйте QR-код в приложении Expo Go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Технологии
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- React Native & Expo
+- React Navigation (Tabs + Native Stack)
+- @expo/vector-icons
+- TypeScript

@@ -1,50 +1,70 @@
-# Welcome to your Expo app 👋
+# Lab 13.1 — Stack Navigation and Parameter Passing
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Student Name:** Нурканат Алиар
+**Date:** 11.04.2026
 
-## Get started
+## Navigation Setup Explanation
 
-1. Install dependencies
+В мобильных приложениях навигация отличается от веб-маршрутизации. В данном проекте используется библиотека `@react-navigation/native-stack`.
+Настройка выполнена в файле `App.tsx`:
 
-   ```bash
-   npm install
-   ```
+1. **`NavigationContainer`**: Главная обертка, управляющая деревом навигации приложения и состоянием истории (аналог `BrowserRouter` в вебе).
+2. **`Stack.Navigator`**: Управляет переходами между экранами по принципу "стека" (каждый новый экран кладется поверх предыдущего).
+3. **`Stack.Screen`**: Определяет конкретный экран и привязывает к нему React-компонент.
+4. **Передача данных**: При клике на кнопку вызывается метод `navigation.navigate('Profile', { userId: '123' })`. Данные принимаются на другом экране через `route.params`.
 
-2. Start the app
+## Описание проекта
 
-   ```bash
-   npx expo start
-   ```
+Мобильное приложение, демонстрирующее работу стековой навигации:
 
-In the output, you'll find options to open the app in a
+- **HomeScreen**: Главный экран с приветствием "Welcome back, John Doe" и кнопками навигации.
+- **ProfileScreen**: Экран профиля, отображающий аватар (инициалы) и загружающий данные для конкретного `userId`.
+- **SettingsScreen**: Экран настроек с информацией о работе автоматической кнопки "Back" в заголовке.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Компоненты
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### App.tsx
+Корневой компонент, инициализирующий `NavigationContainer` и настраивающий стек с тремя экранами.
 
-## Get a fresh project
+### HomeScreen
+Отображает приветствие и две кнопки:
+- **View Profile**: Переход на экран профиля с передачей ID пользователя.
+- **Settings**: Переход на экран настроек.
 
-When you're ready, run:
+### ProfileScreen
+Принимает `userId` через параметры маршрута и отображает:
+- Аватар с инициалами.
+- Заголовок "User Details".
+- Информацию о загруженном профиле.
+- Кнопку "Go Back" для возврата.
+
+### SettingsScreen
+Простой экран с текстом, поясняющим, что стек навигации автоматически обрабатывает кнопку возврата в заголовке.
+
+## Ключевые концепции
+
+- **Native Stack Navigator**: Использование нативных переходов между экранами.
+- **ParamList Type**: Типизация параметров маршрутов через TypeScript (`RootStackParamList`).
+- **Navigation Prop**: Методы `navigate` и `goBack` для управления историей переходов.
+- **Header Customization**: Настройка цвета и стиля заголовка (`headerStyle`, `headerTintColor`).
+
+## Установка и запуск
 
 ```bash
-npm run reset-project
+# Установка зависимостей
+npm install
+
+# Запуск dev сервера Expo
+npx expo start --web
+
+# Для мобильного устройства:
+# npx expo start
+# Отсканируйте QR-код в приложении Expo Go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Технологии
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- React Native
+- Expo
+- React Navigation (Native Stack)
+- TypeScript
