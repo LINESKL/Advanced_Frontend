@@ -1,73 +1,138 @@
-# React + TypeScript + Vite
+# Lab 10.2 — End-to-End Testing with Playwright
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Student Name:** Нурканат Алиар  
+**Date:** 22.04.2026
 
-Currently, two official plugins are available:
+## E2E Testing Strategy Explanation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+В данном проекте реализовано end-to-end тестирование React приложения с использованием Playwright.
 
-## React Compiler
+Ключевые принципы E2E тестирования:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Real Browser Testing**: Тесты выполняются в реальных браузерах (Chromium, Firefox, WebKit).
 
-## Expanding the ESLint configuration
+2. **User-Centric Approach**: Тесты симулируют реальные действия пользователя в браузере.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+3. **Complete Workflows**: Проверка полных пользовательских сценариев от начала до конца.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+4. **Cross-Browser Compatibility**: Тестирование на разных браузерах для обеспечения совместимости.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Описание проекта
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Todo-приложение с полным E2E тестированием:
+
+- Добавление задач (кнопка и Enter)
+- Переключение статуса выполнения
+- Удаление задач
+- Подсчет общего количества и выполненных задач
+- Комплексные пользовательские сценарии
+
+## Компоненты
+
+### TodoList (`src/components/TodoList.tsx`)
+
+Основной компонент приложения:
+- **State Management**: Управление списком задач через `useState`.
+- **Add Todo**: Добавление новых задач с валидацией.
+- **Toggle Todo**: Переключение статуса выполнения.
+- **Delete Todo**: Удаление задач из списка.
+- **Keyboard Support**: Добавление задачи по нажатию Enter.
+
+### E2E Tests (`e2e/todo.spec.ts`)
+
+Комплексные end-to-end тесты:
+
+**Basic Functionality Tests**:
+- Отображение заголовка
+- Добавление задачи через кнопку
+- Добавление задачи через Enter
+- Валидация пустого ввода
+
+**Interaction Tests**:
+- Переключение статуса выполнения
+- Удаление задачи
+- Обновление счетчика
+
+**Workflow Tests**:
+- Полный пользовательский сценарий (добавление, выполнение, удаление)
+- Работа с множественными задачами
+
+## Ключевые концепции
+
+- **Playwright**: Современный фреймворк для E2E тестирования.
+- **Cross-Browser Testing**: Тестирование в Chromium, Firefox, WebKit.
+- **Page Object Pattern**: Использование локаторов для надежного доступа к элементам.
+- **Web Server Integration**: Автоматический запуск dev сервера перед тестами.
+- **Visual Testing**: Проверка видимости элементов и CSS классов.
+
+## Структура тестов
+
+```typescript
+test.describe('TodoList E2E Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:5173');
+  });
+
+  test('should display todo list heading', async ({ page }) => {
+    // E2E тест
+  });
+
+  test('complete user workflow', async ({ page }) => {
+    // Комплексный сценарий
+  });
+});
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Playwright Configuration
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
+```typescript
+export default defineConfig({
+  testDir: './e2e',
+  fullyParallel: true,
+  retries: process.env.CI ? 2 : 0,
+  use: {
+    baseURL: 'http://localhost:5173',
+    trace: 'on-first-retry',
   },
-])
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+  },
+});
 ```
+
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+npm install
+
+# Установка браузеров Playwright
+npx playwright install
+
+# Запуск dev сервера
+npm run dev
+
+# Запуск E2E тестов
+npm run test:e2e
+
+# Запуск тестов с UI
+npm run test:e2e:ui
+
+# Просмотр отчета
+npm run test:e2e:report
+```
+
+## Технологии
+
+- React 19
+- TypeScript
+- Vite 8
+- Playwright 1.59
+- Testing across Chromium, Firefox, WebKit
