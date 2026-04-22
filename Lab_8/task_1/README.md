@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task 1 — Next.js Blog with SSR and SSG
 
-## Getting Started
+## Overview
 
-First, run the development server:
+A blog application demonstrating different Next.js rendering strategies:
+- **SSG (Static Site Generation)** for the home page and blog posts
+- **ISR (Incremental Static Regeneration)** for automatic content updates
+- **SSR (Server-Side Rendering)** for the user profile page
+- **Static pages** for the About page
+
+## Features
+
+### Pages
+
+1. **Home Page** (`/`)
+   - Lists all blog posts
+   - Uses SSG with ISR (revalidate: 60s)
+   - Navigation to other pages
+
+2. **Blog Post Pages** (`/posts/[id]`)
+   - Dynamic routes for individual posts
+   - Author information display
+   - Tags and metadata
+   - Uses SSG with ISR and `generateStaticParams`
+
+3. **Profile Page** (`/profile`)
+   - User-specific content
+   - Real-time timestamp showing SSR
+   - Uses `dynamic = "force-dynamic"` for SSR
+
+4. **About Page** (`/about`)
+   - Static content about the blog
+   - Pure SSG (no revalidation needed)
+
+## Technical Implementation
+
+### Rendering Strategies
+
+**SSG (Static Site Generation)**
+```typescript
+export const revalidate = 60; // ISR: regenerate every 60 seconds
+```
+
+**SSR (Server-Side Rendering)**
+```typescript
+export const dynamic = "force-dynamic"; // Force SSR on every request
+```
+
+**Dynamic Routes**
+```typescript
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ id: post.id }));
+}
+```
+
+### Data Layer
+
+- `src/lib/api.ts` - Mock data fetching functions
+- `src/types/index.ts` - TypeScript interfaces
+- Simulated async delays for realistic behavior
+
+## Installation
+
+```bash
+cd Lab_8/task_1
+npm install
+```
+
+## Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+task_1/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx              # Home (SSG + ISR)
+│   │   ├── about/
+│   │   │   └── page.tsx          # About (SSG)
+│   │   ├── posts/
+│   │   │   └── [id]/
+│   │   │       └── page.tsx      # Post detail (SSG + ISR)
+│   │   ├── profile/
+│   │   │   └── page.tsx          # Profile (SSR)
+│   │   └── not-found.tsx         # 404 page
+│   ├── lib/
+│   │   └── api.ts                # Data fetching
+│   └── types/
+│       └── index.ts              # TypeScript types
+├── package.json
+└── README.md
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Key Concepts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### SSG vs SSR vs ISR
 
-## Deploy on Vercel
+| Strategy | When Renders | Data Freshness | Performance | Use Case |
+|----------|-------------|----------------|-------------|----------|
+| SSG | Build time | Stale until rebuild | Fastest | Static content |
+| SSR | Request time | Always fresh | Slower | User-specific data |
+| ISR | Build + periodic | Fresh after interval | Fast | Semi-dynamic content |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### When to Use Each
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **SSG**: Blog posts, documentation, marketing pages
+- **SSR**: User dashboards, personalized content, real-time data
+- **ISR**: E-commerce products, news articles, frequently updated content
+
+## Technologies
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS
+- React 19
+
+## Learning Outcomes
+
+After completing this task, you will understand:
+- How to implement SSG with `generateStaticParams`
+- How to use ISR with the `revalidate` option
+- How to force SSR with `dynamic = "force-dynamic"`
+- When to choose each rendering strategy
+- How to structure a Next.js application with mixed rendering modes
