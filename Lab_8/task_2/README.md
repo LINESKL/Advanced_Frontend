@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lab 8.2 — SSR User Dashboard
 
-## Getting Started
+**Student Name:** Нурканат Алиар  
+**Date:** 22.04.2026
 
-First, run the development server:
+## SSR Dashboard Implementation Explanation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+В данном проекте реализован пользовательский дашборд с использованием Server-Side Rendering (SSR) для отображения актуальных данных на каждом запросе.
+
+Ключевые особенности SSR дашборда:
+
+1. **Real-time Data**: Данные загружаются на сервере при каждом запросе, обеспечивая актуальность информации (уведомления, аналитика, время рендеринга).
+
+2. **Force Dynamic**: Использование `export const dynamic = "force-dynamic"` отключает кэширование и заставляет Next.js рендерить страницу на каждом запросе.
+
+3. **Server Components**: Все компоненты дашборда являются серверными, что позволяет напрямую обращаться к данным без создания API endpoints.
+
+4. **User-Specific Content**: Дашборд отображает персонализированный контент для конкретного пользователя (профиль, уведомления, активность).
+
+## Описание проекта
+
+Расширенное блог-приложение с полноценным пользовательским дашбордом:
+
+- **Home Page** (`/`): Список постов с просмотрами и лайками (SSG + ISR).
+- **Blog Posts** (`/posts/[id]`): Страницы постов с расширенной статистикой (SSG + ISR).
+- **Dashboard** (`/dashboard`): Дашборд с уведомлениями и аналитикой (SSR).
+- **About Page** (`/about`): Статическая страница о блоге (SSG).
+
+## Компоненты
+
+### Dashboard Page (`src/app/dashboard/page.tsx`)
+
+Главный дашборд пользователя:
+- **Профиль**: Аватар, имя, email, роль и дата регистрации.
+- **Уведомления**: Список уведомлений с типами (success, info, warning) и счетчиком непрочитанных.
+- **Аналитика**: Общая статистика (просмотры, посты, пользователи).
+- **Популярные посты**: Топ-3 постов по количеству просмотров.
+- **Timestamp**: Время рендеринга страницы, обновляющееся на каждом запросе.
+
+### Home Page (`src/app/page.tsx`)
+
+Главная страница блога:
+- Список постов с расширенной информацией (просмотры, лайки).
+- Навигация на дашборд и другие страницы.
+- SSG + ISR для оптимальной производительности.
+
+### Blog Post Pages (`src/app/posts/[id]/page.tsx`)
+
+Страницы постов:
+- Расширенная статистика (просмотры, лайки).
+- Информация об авторе с количеством постов.
+- Динамические маршруты с ISR.
+
+### About Page (`src/app/about/page.tsx`)
+
+Статическая страница о блоге.
+
+## Ключевые концепции
+
+- **Server-Side Rendering (SSR)**: Рендеринг на каждом запросе для актуальных данных.
+- **Notifications System**: Система уведомлений с фильтрацией и подсчетом непрочитанных.
+- **Analytics Dashboard**: Агрегация данных для отображения статистики.
+- **Mixed Rendering**: Комбинация SSR и SSG в одном приложении.
+- **Real-time Updates**: Обновление данных при каждой перезагрузке страницы.
+
+## Новые возможности в Task 2
+
+### Расширенные типы данных
+
+```typescript
+interface Notification {
+  id: string;
+  type: "info" | "warning" | "success";
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+interface Analytics {
+  totalViews: number;
+  totalPosts: number;
+  totalUsers: number;
+  popularPosts: Post[];
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Дополнительные API функции
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `getNotifications(userId)`: Получение уведомлений пользователя.
+- `getAnalytics()`: Агрегация статистики по всему сайту.
+- Расширенные данные постов (views, likes).
+- Информация об авторах (postsCount).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Структура данных
 
-## Learn More
+### Types (`src/types/index.ts`)
 
-To learn more about Next.js, take a look at the following resources:
+Расширенные TypeScript интерфейсы:
+- `Post`: с полями views и likes.
+- `Author`: с полем postsCount.
+- `User`: с полем joinedDate.
+- `Notification`: структура уведомления.
+- `Analytics`: структура аналитики.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### API Layer (`src/lib/api.ts`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Расширенные mock-функции:
+- `getNotifications(userId)`: возвращает уведомления пользователя.
+- `getAnalytics()`: вычисляет общую статистику и популярные посты.
 
-## Deploy on Vercel
+## Отличия от Task 1
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Функция | Task 1 | Task 2 |
+|---------|--------|--------|
+| Страница пользователя | Простой профиль (SSR) | Полный дашборд (SSR) |
+| Данные постов | Базовая информация | Просмотры и лайки |
+| Уведомления | ❌ | ✅ Real-time |
+| Аналитика | ❌ | ✅ Статистика сайта |
+| Популярные посты | ❌ | ✅ Топ-3 по просмотрам |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Установка и запуск
+
+```bash
+# Установка зависимостей
+npm install
+
+# Запуск dev сервера
+npm run dev
+
+# Сборка для production
+npm run build
+
+# Запуск production сервера
+npm start
+```
+
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
+
+## Технологии
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS

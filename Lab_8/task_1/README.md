@@ -1,138 +1,110 @@
-# Task 1 — Next.js Blog with SSR and SSG
+# Lab 8.1 — Next.js Blog with SSR and SSG
 
-## Overview
+**Student Name:** Нурканат Алиар  
+**Date:** 22.04.2026
 
-A blog application demonstrating different Next.js rendering strategies:
-- **SSG (Static Site Generation)** for the home page and blog posts
-- **ISR (Incremental Static Regeneration)** for automatic content updates
-- **SSR (Server-Side Rendering)** for the user profile page
-- **Static pages** for the About page
+## Rendering Strategies Explanation
 
-## Features
+В Next.js существует три основные стратегии рендеринга, каждая из которых решает определенные задачи:
 
-### Pages
+1. **SSG (Static Site Generation)**: Страницы генерируются во время сборки (`npm run build`). HTML создается один раз и переиспользуется для всех запросов. Идеально для контента, который редко меняется (блоги, документация).
 
-1. **Home Page** (`/`)
-   - Lists all blog posts
-   - Uses SSG with ISR (revalidate: 60s)
-   - Navigation to other pages
+2. **ISR (Incremental Static Regeneration)**: Расширение SSG с возможностью обновления статических страниц через заданный интервал без полной пересборки. Настраивается через `export const revalidate = 60` (обновление каждые 60 секунд).
 
-2. **Blog Post Pages** (`/posts/[id]`)
-   - Dynamic routes for individual posts
-   - Author information display
-   - Tags and metadata
-   - Uses SSG with ISR and `generateStaticParams`
+3. **SSR (Server-Side Rendering)**: Страница рендерится на сервере при каждом запросе. Используется для динамического контента, который должен быть всегда актуальным (дашборды, профили пользователей). Включается через `export const dynamic = "force-dynamic"`.
 
-3. **Profile Page** (`/profile`)
-   - User-specific content
-   - Real-time timestamp showing SSR
-   - Uses `dynamic = "force-dynamic"` for SSR
+## Описание проекта
 
-4. **About Page** (`/about`)
-   - Static content about the blog
-   - Pure SSG (no revalidation needed)
+Блог-приложение, демонстрирующее различные стратегии рендеринга в Next.js:
 
-## Technical Implementation
+- **Home Page** (`/`): Список всех постов блога (SSG + ISR).
+- **Blog Posts** (`/posts/[id]`): Отдельные страницы постов с динамическими маршрутами (SSG + ISR).
+- **Profile Page** (`/profile`): Профиль пользователя с актуальными данными (SSR).
+- **About Page** (`/about`): Статическая страница о блоге (SSG).
 
-### Rendering Strategies
+## Компоненты
 
-**SSG (Static Site Generation)**
-```typescript
-export const revalidate = 60; // ISR: regenerate every 60 seconds
-```
+### Home Page (`src/app/page.tsx`)
 
-**SSR (Server-Side Rendering)**
-```typescript
-export const dynamic = "force-dynamic"; // Force SSR on every request
-```
+Главная страница блога:
+- Отображает список всех постов с заголовками, датами и тегами.
+- Использует SSG с ISR (revalidate: 60 секунд).
+- Навигация по сайту через Link компоненты.
 
-**Dynamic Routes**
-```typescript
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map((post) => ({ id: post.id }));
-}
-```
+### Blog Post Pages (`src/app/posts/[id]/page.tsx`)
 
-### Data Layer
+Страницы отдельных постов:
+- Динамические маршруты с использованием `generateStaticParams`.
+- Отображение полного контента поста, информации об авторе и тегов.
+- SSG + ISR для автоматического обновления контента.
 
-- `src/lib/api.ts` - Mock data fetching functions
-- `src/types/index.ts` - TypeScript interfaces
-- Simulated async delays for realistic behavior
+### Profile Page (`src/app/profile/page.tsx`)
 
-## Installation
+Страница профиля пользователя:
+- Отображает информацию о пользователе и время рендеринга.
+- Использует SSR (`dynamic = "force-dynamic"`).
+- Данные обновляются на каждом запросе.
+
+### About Page (`src/app/about/page.tsx`)
+
+Статическая страница:
+- Информация о блоге и технологиях.
+- Чистый SSG без ревалидации.
+
+## Ключевые концепции
+
+- **Static Site Generation (SSG)**: Генерация HTML во время сборки.
+- **Incremental Static Regeneration (ISR)**: Обновление статических страниц по расписанию.
+- **Server-Side Rendering (SSR)**: Рендеринг на каждом запросе.
+- **generateStaticParams**: Предварительная генерация динамических маршрутов.
+- **App Router**: Современная система роутинга Next.js с серверными компонентами.
+
+## Сравнение стратегий
+
+| Стратегия | Когда рендерится | Свежесть данных | Производительность |
+|-----------|------------------|-----------------|-------------------|
+| SSG | Build time | Устаревает до rebuild | Самая быстрая |
+| SSR | Request time | Всегда свежие | Медленнее |
+| ISR | Build + периодически | Обновляется по интервалу | Быстрая |
+
+## Структура данных
+
+### Types (`src/types/index.ts`)
+
+TypeScript интерфейсы:
+- `Post`: структура поста блога (id, title, content, author, date, tags, readTime).
+- `Author`: информация об авторе (id, name, bio, avatar).
+- `User`: данные пользователя (id, name, email, avatar, role).
+
+### API Layer (`src/lib/api.ts`)
+
+Mock-функции для получения данных:
+- `getAllPosts()`: возвращает все посты.
+- `getPostById(id)`: получает пост по ID.
+- `getAuthorById(id)`: получает автора по ID.
+- `getCurrentUser()`: возвращает текущего пользователя.
+
+## Установка и запуск
 
 ```bash
-cd Lab_8/task_1
+# Установка зависимостей
 npm install
-```
 
-## Development
-
-```bash
+# Запуск dev сервера
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000)
-
-## Build
-
-```bash
+# Сборка для production
 npm run build
+
+# Запуск production сервера
 npm start
 ```
 
-## Project Structure
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
 
-```
-task_1/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx              # Home (SSG + ISR)
-│   │   ├── about/
-│   │   │   └── page.tsx          # About (SSG)
-│   │   ├── posts/
-│   │   │   └── [id]/
-│   │   │       └── page.tsx      # Post detail (SSG + ISR)
-│   │   ├── profile/
-│   │   │   └── page.tsx          # Profile (SSR)
-│   │   └── not-found.tsx         # 404 page
-│   ├── lib/
-│   │   └── api.ts                # Data fetching
-│   └── types/
-│       └── index.ts              # TypeScript types
-├── package.json
-└── README.md
-```
-
-## Key Concepts
-
-### SSG vs SSR vs ISR
-
-| Strategy | When Renders | Data Freshness | Performance | Use Case |
-|----------|-------------|----------------|-------------|----------|
-| SSG | Build time | Stale until rebuild | Fastest | Static content |
-| SSR | Request time | Always fresh | Slower | User-specific data |
-| ISR | Build + periodic | Fresh after interval | Fast | Semi-dynamic content |
-
-### When to Use Each
-
-- **SSG**: Blog posts, documentation, marketing pages
-- **SSR**: User dashboards, personalized content, real-time data
-- **ISR**: E-commerce products, news articles, frequently updated content
-
-## Technologies
+## Технологии
 
 - Next.js 16 (App Router)
+- React 19
 - TypeScript
 - Tailwind CSS
-- React 19
-
-## Learning Outcomes
-
-After completing this task, you will understand:
-- How to implement SSG with `generateStaticParams`
-- How to use ISR with the `revalidate` option
-- How to force SSR with `dynamic = "force-dynamic"`
-- When to choose each rendering strategy
-- How to structure a Next.js application with mixed rendering modes
